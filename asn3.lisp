@@ -12,41 +12,40 @@ list of (mostly) complex numbers from the result of the DFT formula.
 (LLM Euler's Formula, cos and sin) |#
 
 (defun DiscreteTransform (numbers)
+
     (print numbers)
     (let ((f_u_list '()) (N (length numbers)) (i (sqrt -1)))  ;; f(u) store the return list, N: length of the list, i: imaginary numbers
         (let ((u 0))  ;; create the variable u for the outer loop
             (do    ;; this is for the calculation of f(u) list
                 ()  ;; nothing
-                ((= u N) (print f_u_list))  ;; end cond
+                ((= u N) (print (reverse f_u_list)))  ;; end cond
                 (progn  ;; outer loop body
                     ;;(print u) 
                     
-                    (let ((x 0) (total 0))
+                    (let ((x 0) (total 0))  ;; for each iteration total should be 0 at the start
                         (do  ;; inner loop to calculate the each summation
                             ()
                             ((= x N) t)  ;; when x reaches the max stop (return true)
                             (progn ;; inner loop body
                                 ;; perform the calculations
-                                (let (A B C D E F)  ;; declare the variable before initalizing it
+                                (let ((A 0) (B 0) (C 0) (D 0) (E 0) (F 0))  ;; declare the variable before initalizing it
                                     (setq A (* -2 i pi u x)) 
                                     (setq B (/ A N))
                                     (setq C (exp B))
                                     (setq D (* (nth x numbers) C))
                                     (setq E (/ 1 N))
-                                    (setq F (* D E))
+                                    (setq F (* E D))
 
+                                    (setq total (+ total D))  ;; add to total
 
-                                    (setq total (+ total F))  ;; add to total
-
-
-                                    
                                 )
                                 
                                 ;; done next flow
-                                (setq x (+ x 1))
+                                (setq x (+ x 1))  ;; increment x
                             )
                            
                         )
+
                         (push total f_u_list)  ;; add the result to the f(u) list
                     )
 
@@ -56,7 +55,6 @@ list of (mostly) complex numbers from the result of the DFT formula.
             )
         )
     )
-    
 
 )
 (DiscreteTransform '(1 2 3 4 5))
