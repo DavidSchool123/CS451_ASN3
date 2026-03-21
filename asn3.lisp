@@ -17,14 +17,14 @@ list of (mostly) complex numbers from the result of the DFT formula.
         (let ((u 0))  ;; create the variable u for the outer loop
             (do    ;; this is for the calculation of f(u) list
                 ()  ;; nothing
-                ((= u N) f_u_list)  ;; end cond
+                ((= u N) (print f_u_list))  ;; end cond
                 (progn  ;; outer loop body
-                    (print u) 
+                    ;;(print u) 
                     
-                    (let ((x 0))
+                    (let ((x 0) (total 0))
                         (do  ;; inner loop to calculate the each summation
                             ()
-                            ((= x N) "Done")
+                            ((= x N) t)  ;; when x reaches the max stop (return true)
                             (progn ;; inner loop body
                                 ;; perform the calculations
                                 (let (A B C D E F)  ;; declare the variable before initalizing it
@@ -36,14 +36,18 @@ list of (mostly) complex numbers from the result of the DFT formula.
                                     (setq F (* D E))
 
 
-                                    (push F f_u_list)  ;; add the result to the f(u) list
+                                    (setq total (+ total F))  ;; add to total
+
+
+                                    
                                 )
                                 
                                 ;; done next flow
                                 (setq x (+ x 1))
                             )
-                            
+                           
                         )
+                        (push total f_u_list)  ;; add the result to the f(u) list
                     )
 
                     ;; done next flow
