@@ -64,10 +64,44 @@ list of (mostly) complex numbers from the result of the DFT formula.
  |#
 
 ;; Question 2
-
 #| Calculate the Inverse Discrete Fourier Transform on a given list of (mostly) complex numbers. 
 The only parameter to this function is a list of numbers representing data in the frequency domain.
-(LLM must use Euler's Formula, cos and sin)|#
+|#
+;; Logic: make a loop for every x, and inside it make another loop for every u. 
+;; Each time, calculate the inverse exponential part, then multiply by the value in the list, keep adding it to the total, and when done, store the rounded real part into the result list. 
+(defun InverseDiscreteTransform (numbers)
+    (let ((f_x_list '()) (N (length numbers)) (i (sqrt -1)))
+         (let ((x 0))
+              (do
+                  ()
+                  ((= x N) (reverse f_x_list))
+                  (progn
+                      (let ((u 0) (total 0))
+                           (do
+                               ()
+                               ((= u N) t)
+                               (progn
+                                   (let ((A 0) (B 0) (C 0) (D 0) (E 0))
+                                        (setq A (* 2 i pi u x))
+                                        (setq B (/ A N))
+                                        (setq C (exp B))
+                                        (setq D (* (nth u numbers) C))
+                                        (setq E (+ total D))
+                                        (setq total E)
+                                        )
+                                        
+                                   (setq u (+ u 1))
+                                   )
+                               )
+                           (push (round (realpart total)) f_x_list);; use function(realpart Y) to avoid round error.
+                           )
+                      (set x (+ x 1))
+                      )
+                  )
+              )
+         )
+    )
+
 
 
 
