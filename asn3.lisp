@@ -13,7 +13,6 @@ list of (mostly) complex numbers from the result of the DFT formula.
 
 (defun DiscreteTransform (numbers)
 
-    
     (let ((f_u_list '()) (N (length numbers)) (i (sqrt -1)))  ;; f(u) store the return list, N: length of the list, i: imaginary numbers
         (let ((u 0))  ;; create the variable u for the outer loop
             (do    ;; this is for the calculation of f(u) list
@@ -27,8 +26,10 @@ list of (mostly) complex numbers from the result of the DFT formula.
                             ()
                             ((= x N) t)  ;; when x reaches the max stop (return true)
                             (progn ;; inner loop body
-                                ;; perform the calculations
+                                
                                 (let ((A 0) (B 0) (C 0) (D 0) (E 0) (F 0))  ;; declare the variable before initalizing it
+                                    
+                                    ;; perform the calculations
                                     (setq A (* -2 i pi u x)) 
                                     (setq B (/ A N))
                                     (setq C (exp B))
@@ -36,32 +37,28 @@ list of (mostly) complex numbers from the result of the DFT formula.
                                     (setq E (/ 1 N))
                                     (setq F (* E D))
 
-                                    (setq total (+ total F))  ;; add to total
+                                    (setq total (+ total D))  ;; add to total
 
                                 )
                                 
                                 ;; done next flow
-                                (setq x (+ x 1))  ;; increment x
+                                (setq x (+ x 1)) 
                             )
                            
                         )
 
                         (push total f_u_list)  ;; add the result to the f(u) list
                     )
-
-                    ;; done next flow
-                    (setq u (+ u 1))    
+                    
+                    (setq u (+ u 1))    ;; done next flow
                 )
             )
         )
     )
 
 )
-(DiscreteTransform '(1 2 3 4 5))
 
-
-#|            
- |#
+(DiscreteTransform '(1 2 3 4 5))  ;; Test here: 
 
 ;; Question 2
 #| Calculate the Inverse Discrete Fourier Transform on a given list of (mostly) complex numbers. 
@@ -70,38 +67,47 @@ The only parameter to this function is a list of numbers representing data in th
 ;; paper work logic that I will translate over: make a loop for every x, and inside it make another loop for every u. 
         ;; Each time, calculate the inverse exponential part, then multiply by the value in the list, keep adding it to the total, and when done, store the rounded real part into the result list. 
 ;; Sources used: Chapter 10 slides: 20, 21. 23, 30, 46, 53, 54. 55, 69, 70, 71 ,76, 94, 95, 96
+
+
 (defun InverseDiscreteTransform (numbers)
-    (let ((x_list '()) (N (length numbers)) (i (sqrt -1))) ;;store the final value into list
+    (let ((f_x_list '()) (N (length numbers)) (i (sqrt -1))) ;;store the final value into list
          (let ((x 0)) ;;use x as the outer loop
-              (do
-                  ()
-                  ((= x N) (reverse x_list));;return list when x reachs n
-                  (progn
-                      (let ((u 0) (total 0));;use u for the inner loop & start the total at 0
-                           (do
-                               ()
-                               ((= u N) t) ;;once u reaches n stop the inner loop
-                               (progn
-                                   (let ((A 0) (B 0) (C 0) (D 0) (E 0))
-                                        (setq A (* 2 i pi u x)) ;;top part
-                                        (setq B (/ A N)) ;; divide by n
-                                        (setq C (exp B)) ;; e^fraction
-                                        (setq D (* (nth u numbers) C)) ;;milpilty the e exp by F(u)
-                                        (setq E (+ total D));; add to total
-                                        (setq total E) ;; save it
-                                        )
+            (do
+                ()
+                ((= x N) (reverse f_x_list))  ;;return list when x reachs n
+                (progn
+                    (let ((u 0) (total 0))  ;;use u for the inner loop & start the total at 0
+                        (do
+                            ()
+                            ((= u N) t) ;;once u reaches n stop the inner loop
+                            (progn
+                                (let ((A 0) (B 0) (C 0) (D 0) (E 0))
+
+                                    ;; perform the calculation
+                                    (setq A (* 2 i pi u x)) ;;top part
+                                    (setq B (/ A N)) ;; divide by n
+                                    (setq C (exp B)) ;; e^fraction
+                                    (setq D (* (nth u numbers) C)) ;;milpilty the e exp by F(u)
+
+                                    (setq total (+ total D))  ;; add to total
                                         
-                                   (setq u (+ u 1))
-                                   )
-                               )
-                           (push (round (realpart total)) x_list);; use function(realpart Y) to avoid round error.
-                           )
-                      (setq x (+ x 1))
-                      )
-                  )
-              )
-         )
+                                )
+                                        
+                                (setq u (+ u 1))   ;; done next flow
+                            )
+                            
+                        )
+
+                        (push (round (realpart total)) f_x_list)  ;; use function(realpart Y) to avoid round error.     
+                                                  
+                    )
+
+                    (setq x (+ x 1))  ;; done next flow
+                )
+            )
+        )
     )
 )
+
 ;; Test here: 
 (InverseDiscreteTransform (DiscreteTransform '(1 2 3 4 5))) ;; test this once you change what u wanted
