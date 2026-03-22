@@ -13,12 +13,12 @@ list of (mostly) complex numbers from the result of the DFT formula.
 
 (defun DiscreteTransform (numbers)
 
-    (print numbers)
+    
     (let ((f_u_list '()) (N (length numbers)) (i (sqrt -1)))  ;; f(u) store the return list, N: length of the list, i: imaginary numbers
         (let ((u 0))  ;; create the variable u for the outer loop
             (do    ;; this is for the calculation of f(u) list
                 ()  ;; nothing
-                ((= u N) (print (reverse f_u_list)))  ;; end cond
+                ((= u N) (reverse f_u_list))  ;; end cond
                 (progn  ;; outer loop body
                     ;;(print u) 
                     
@@ -36,7 +36,7 @@ list of (mostly) complex numbers from the result of the DFT formula.
                                     (setq E (/ 1 N))
                                     (setq F (* E D))
 
-                                    (setq total (+ total D))  ;; add to total
+                                    (setq total (+ total F))  ;; add to total
 
                                 )
                                 
@@ -67,41 +67,41 @@ list of (mostly) complex numbers from the result of the DFT formula.
 #| Calculate the Inverse Discrete Fourier Transform on a given list of (mostly) complex numbers. 
 The only parameter to this function is a list of numbers representing data in the frequency domain.
 |#
-;; Logic: make a loop for every x, and inside it make another loop for every u. 
-;; Each time, calculate the inverse exponential part, then multiply by the value in the list, keep adding it to the total, and when done, store the rounded real part into the result list. 
+;; paper work logic that I will translate over: make a loop for every x, and inside it make another loop for every u. 
+        ;; Each time, calculate the inverse exponential part, then multiply by the value in the list, keep adding it to the total, and when done, store the rounded real part into the result list. 
+;; Sources used: Chapter 10 slides: 20, 21. 23, 30, 46, 53, 54. 55, 69, 70, 71 ,76, 94, 95, 96
 (defun InverseDiscreteTransform (numbers)
-    (let ((f_x_list '()) (N (length numbers)) (i (sqrt -1)))
-         (let ((x 0))
+    (let ((x_list '()) (N (length numbers)) (i (sqrt -1))) ;;store the final value into list
+         (let ((x 0)) ;;use x as the outer loop
               (do
                   ()
-                  ((= x N) (reverse f_x_list))
+                  ((= x N) (reverse x_list));;return list when x reachs n
                   (progn
-                      (let ((u 0) (total 0))
+                      (let ((u 0) (total 0));;use u for the inner loop & start the total at 0
                            (do
                                ()
-                               ((= u N) t)
+                               ((= u N) t) ;;once u reaches n stop the inner loop
                                (progn
                                    (let ((A 0) (B 0) (C 0) (D 0) (E 0))
-                                        (setq A (* 2 i pi u x))
-                                        (setq B (/ A N))
-                                        (setq C (exp B))
-                                        (setq D (* (nth u numbers) C))
-                                        (setq E (+ total D))
-                                        (setq total E)
+                                        (setq A (* 2 i pi u x)) ;;top part
+                                        (setq B (/ A N)) ;; divide by n
+                                        (setq C (exp B)) ;; e^fraction
+                                        (setq D (* (nth u numbers) C)) ;;milpilty the e exp by F(u)
+                                        (setq E (+ total D));; add to total
+                                        (setq total E) ;; save it
                                         )
                                         
                                    (setq u (+ u 1))
                                    )
                                )
-                           (push (round (realpart total)) f_x_list);; use function(realpart Y) to avoid round error.
+                           (push (round (realpart total)) x_list);; use function(realpart Y) to avoid round error.
                            )
-                      (set x (+ x 1))
+                      (setq x (+ x 1))
                       )
                   )
               )
          )
     )
-
-
-
-
+)
+;; Test here: 
+(InverseDiscreteTransform (DiscreteTransform '(1 2 3 4 5))) ;; test this once you change what u wanted
