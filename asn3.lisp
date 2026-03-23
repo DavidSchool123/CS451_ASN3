@@ -37,7 +37,7 @@ list of (mostly) complex numbers from the result of the DFT formula.
                                     (setq E (/ 1 N))
                                     (setq F (* E D))
 
-                                    (setq total (+ total D))  ;; add to total
+                                    (setq total (+ total F))  ;; add to total
 
                                 )
                                 
